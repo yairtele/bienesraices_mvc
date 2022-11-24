@@ -1,0 +1,29 @@
+{
+  "name": "bienesraices_mvc",
+  "version": "1.0.0",
+  "description": "Primer proyecto NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yairtele/bienesraices_mvc.git"
+  },
+  "keywords": [
+    "MVC",
+    "Pug",
+    "Tailwind",
+    "MySQL",
+    "Sequelize"
+  ],
+  "author": "Yair Telezon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yairtele/bienesraices_mvc/issues"
+  },
+  "homepage": "https://github.com/yairtele/bienesraices_mvc#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
