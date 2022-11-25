@@ -1,14 +1,10 @@
-import express from "express";
+import express from 'express';
 
 const router = express.Router();
 
 //Routing
-router.get('/', function(req, res){
-  res.send('Hola mundo en Express');
-});
-
-router.post('/', function(req, res){
-  res.json({msg: 'Respuesta de tipo post'});
+router.get('/login', function(req, res){
+  res.render('auth/login.pug')//send('Hola mundo en Express');
 });
 
 router.get('/nosotros', function(req, res){
