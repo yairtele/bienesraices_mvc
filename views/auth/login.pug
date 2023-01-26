@@ -1,0 +1,8 @@
+extends ../layout/index
+
+block content
+  div
+      if authenticated
+        h2 User Authenticated
+      else
+        h2.text-center.text-2xl.font-extrabold Please Login
