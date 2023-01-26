@@ -1,14 +1,10 @@
 import express from 'express';
+import {loginForm, registerForm} from '../controllers/userController.js'
 
 const router = express.Router();
 
 //Routing
-router.get('/login', function(req, res){
-  res.render('auth/login.pug')//send('Hola mundo en Express');
-});
-
-router.get('/nosotros', function(req, res){
-  res.send('Información sobre la empresa');
-});
+router.get('/login', loginForm);
+router.get('/register', registerForm);
 
 export default router;
