@@ -1,5 +1,6 @@
 const loginForm = (req, res) => {
   res.render('auth/login.pug', {
+    page: "Login",
     authenticated: false
   })
 };

@@ -1,9 +1,32 @@
 extends ../layout/index
 
 block content
-  div.py-10
-    h1.text-4xl.my-10.font-extrabold.text-center Real
+  div.py-5
+    h1.text-4xl.my-5.font-extrabold.text-center Real
       span.font-normal Estate
     h2.text-center.text-2xl.font-extrabold=page
 
-    div.mt-8
+    div.mt-8.mx-auto.max-w-md
+      .bg-white.py-8.px-4.shadow
+        form.space-y-5
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="firstName") First Name
+            input#firstName.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="First name" type="text" name="firstName")
+          
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="lastName") Last Name
+            input#lastName.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Last name" type="text" name="lastName")
+          
+          div 
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Email
+            input#email.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Email" type="text" name="email")
+          
+          div 
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") Password
+            input#password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Password" type="password" name="password")
+          
+          div 
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="repeatedPassword") Repeat Password
+            input#repeatedPassword.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Repeat Password" type="password" name="repeatedPassword")
+          
+          input(class="w-full bg-indigo-400 hover:bg-indigo-700 text-white font-bold py-3 cursor-pointer" type="submit" value="Create account")
