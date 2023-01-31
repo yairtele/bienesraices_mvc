@@ -10,7 +10,14 @@ const registerForm = (req, res) => {
   })
 };
 
+const forgotPasswordForm = (req, res) => {
+  res.render('auth/forgot-password.pug', {
+    page: 'Retrieve your access'
+  })
+};
+
 export {
   loginForm,
-  registerForm
+  registerForm,
+  forgotPasswordForm
 }
