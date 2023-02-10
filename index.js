@@ -5,9 +5,13 @@ import db from './config/db.js';
 //Creating the app
 const app = express();
 
+//Get forms data
+app.use(express.urlencoded({extended: true}));
+
 //Database connection
 try{
   await db.authenticate();
+  db.sync();
   console.log('Succesful connection to database');
 }catch(error){
   console.log(error);
