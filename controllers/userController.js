@@ -1,6 +1,7 @@
-import {check, validationResult} from 'express-validator'
-import {generateId} from '../helpers/tokens.js'
-import { registryEmail } from '../helpers/emails.js';
+import {check, validationResult} from 'express-validator';
+import bcrypt from 'bcrypt';
+import {generateId} from '../helpers/tokens.js';
+import { registryEmail, forgotPasswordEmail } from '../helpers/emails.js';
 import User from '../models/User.js';
 
 const loginForm = (req, res) => {
@@ -118,14 +119,123 @@ const confirm = async (req, res) => {
 
 const forgotPasswordForm = (req, res) => {
   res.render('auth/forgot-password', {
-    page: 'Retrieve your access'
+    page: 'Retrieve your access',
+    csrfToken: req.csrfToken()
   })
 };
+
+const resetPassword = async (req, res) => {
+
+  //Validation
+  await check('email').isEmail().withMessage('This looks not like an email!').run(req);
+
+  let result = validationResult(req);
+
+  //Verify result is empty
+  if(!result.isEmpty()){ //if there are errors
+    return res.render('auth/forgot-password', {
+      page: 'Retrieve your access',
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    })
+  }
+
+  //Search user
+  const {email} = req.body;
+
+  const user = await User.findOne({where: {email}});
+
+  if(!user){
+    return res.render('auth/forgot-password', {
+      page: 'Retrieve your access',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: "The email doesn't belong to any user"}],
+    })
+  }
+
+  //Generate token and send email
+  user.token = generateId();
+  await user.save();
+
+  //Send email
+  forgotPasswordEmail({
+    email: user.email,
+    firstName: user.firstName,
+    token: user.token
+  })
+
+  //Render message
+  res.render('templates/message', {
+    page: 'Reset your password',
+    message: 'We have sent you an email with instructions'
+  })
+}
+
+const verifyToken = async (req, res) => {
+
+  const {token} = req.params;
+
+  const user = await User.findOne({where: {token}});
+
+  if(!user){
+    res.render('auth/confirm-account', {
+      page: 'Reset your password',
+      message: 'There was an error when validating the information, please try again',
+      error: true
+    })
+  }
+
+  //Show form to reset password
+  res.render('auth/reset-password', {
+    page: 'Reset your password',
+    csrfToken: req.csrfToken()
+  })
+
+}
+
+const newPassword = async (req, res) => {
+
+  //Validate password
+  await check('password').isLength({min: 6}).withMessage('Password length must be at least 6 characters').run(req);
+
+  let result = validationResult(req);
+
+  //Verify result is empty
+  if(!result.isEmpty()){ //if there are errors
+    return res.render('auth/reset-password', {
+      page: 'Reset your password',
+      csrfToken: req.csrfToken(),
+      errors: result.array()
+    })
+  }
+
+  const {token} = req.params;
+  const {password} = req.body;
+
+  //Check who is updating pass
+  const user = await User.findOne({where: {token}});
+
+  //Hash new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+
+  //Disable token and save changes
+  user.token = null;
+  await user.save();
+
+  res.render('auth/confirm-account', {
+    page: 'Password was reseted',
+    message: 'New password was saved correctly'
+  })
+}
 
 export {
   loginForm,
   registerForm,
   register,
   confirm,
-  forgotPasswordForm
+  forgotPasswordForm,
+  resetPassword,
+  verifyToken,
+  newPassword
 }

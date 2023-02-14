@@ -1,5 +1,5 @@
 import express from 'express';
-import {loginForm, registerForm, register, confirm, forgotPasswordForm} from '../controllers/userController.js'
+import {loginForm, registerForm, register, confirm, forgotPasswordForm, resetPassword, verifyToken, newPassword} from '../controllers/userController.js'
 
 const router = express.Router();
 
@@ -12,5 +12,10 @@ router.post('/register', register);
 router.get('/confirm/:token', confirm);
 
 router.get('/forgot-password', forgotPasswordForm);
+router.post('/forgot-password', resetPassword);
+
+//Persist new password
+router.get('/forgot-password/:token', verifyToken);
+router.post('/forgot-password/:token', newPassword);
 
 export default router;
