@@ -10,8 +10,10 @@ const loginForm = (req, res) => {
 };
 
 const registerForm = (req, res) => {
+
   res.render('auth/register', {
-    page: 'Create account'
+    page: 'Create account',
+    csrfToken: req.csrfToken()
   })
 };
 //
@@ -32,6 +34,7 @@ const register = async (req,res) => {
   if(!result.isEmpty()){ //if there are errors
     return res.render('auth/register', {
       page: 'Create account',
+      csrfToken: req.csrfToken(),
       errors: result.array(),
       user: {
         firstName: req.body.firstName,
@@ -52,6 +55,7 @@ const register = async (req,res) => {
   if(userExists){
     return res.render('auth/register', {
       page: 'Create account',
+      csrfToken: req.csrfToken(),
       errors: [{msg: 'User already exists'}],
       user: {
         firstName: req.body.firstName,
