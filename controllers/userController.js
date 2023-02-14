@@ -1,5 +1,6 @@
 import {check, validationResult} from 'express-validator'
 import {generateId} from '../helpers/tokens.js'
+import { registryEmail } from '../helpers/emails.js';
 import User from '../models/User.js';
 
 const loginForm = (req, res) => {
@@ -60,7 +61,7 @@ const register = async (req,res) => {
     })
   }
 
-  await User.create({
+  const user = await User.create({
     firstName,
     lastName,
     email,
@@ -68,10 +69,45 @@ const register = async (req,res) => {
     token: generateId()
   })
 
+  //Send confirmation email
+  registryEmail({
+    firstName: user.firstName,
+    email: user.email,
+    token: user.token
+  })
+
   //Show confirmation message
   res.render('templates/message', {
     page: 'Account created',
     message: 'We have sent a confirmation email, please click the link'
+  })
+
+}
+
+const confirm = async (req, res) => {
+
+  const {token} = req.params;
+    
+  //Verify if token is valid
+  const user = await User.findOne({where: {token}})
+
+  if(!user){
+    res.render('auth/confirm-account', {
+      page: 'Error confirming your account',
+      message: 'There was an error when confirming your account, please try again',
+      error: true
+    })
+  }
+
+  //Confirm account
+  user.token = null;
+  user.confirmed = true;
+
+  await user.save();
+
+  res.render('auth/confirm-account', {
+    page: 'Account confirmed',
+    message: 'Your account was confirmed correctly'
   })
 
 }
@@ -86,5 +122,6 @@ export {
   loginForm,
   registerForm,
   register,
+  confirm,
   forgotPasswordForm
 }
