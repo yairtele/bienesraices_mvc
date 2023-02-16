@@ -1,14 +1,84 @@
 import {check, validationResult} from 'express-validator';
 import bcrypt from 'bcrypt';
-import {generateId} from '../helpers/tokens.js';
+import jwt from 'jsonwebtoken';
+import {generateJWT, generateId} from '../helpers/tokens.js';
 import { registryEmail, forgotPasswordEmail } from '../helpers/emails.js';
 import User from '../models/User.js';
 
 const loginForm = (req, res) => {
   res.render('auth/login', {
-    page: "Login"
+    page: "Login",
+    csrfToken: req.csrfToken()
   })
 };
+
+const authenticate = async (req, res) => {
+  //Validation
+  await check('email').isEmail().withMessage('Email is not correct').run(req);
+  await check('password').notEmpty().withMessage('Please enter your password').run(req);
+
+  let result = validationResult(req);
+
+  //Verify result is empty
+  if(!result.isEmpty()){ //if there are errors
+    return res.render('auth/login', {
+      page: 'Login',
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+      user: {
+        email: req.body.email
+      }
+    })
+  }
+
+  const {email, password} = req.body;
+  //Verify if user exists
+  const user = await User.findOne({where: {email}});
+
+  if(!user){
+    return res.render('auth/login', {
+      page: 'Login',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: 'User does not exist'}],
+      user: {
+        email: req.body.email
+      }
+    });
+  }
+
+  //Verify if user is confirmed
+  if(!user.confirmed){
+    return res.render('auth/login', {
+      page: 'Login',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: 'Your account has not been confirmed yet'}],
+      user: {
+        email: req.body.email
+      }
+    });
+  }
+
+  //Verify password
+  if(!user.verifyPassword(password)){
+    return res.render('auth/login', {
+      page: 'Login',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: 'Incorrect password'}],
+      user: {
+        email: req.body.email
+      }
+    });
+  }
+
+  //Authenticate user
+  const token = generateJWT({id: user.id, name: user.firstName});
+
+  //Save in cookie
+  return res.cookie('_token', token, {
+    httpOnly: true,//avoid cross site attacks
+    secure:true //cookies in secure connections
+  }).redirect('/my_real_estate');
+}
 
 const registerForm = (req, res) => {
 
@@ -24,7 +94,7 @@ const register = async (req,res) => {
   await check('firstName').notEmpty().withMessage('First name cannot be empty').run(req);
   await check('lastName').notEmpty().withMessage('Last name cannot be empty').run(req);
 
-  await check('email').isEmail().withMessage('This looks not like an email!').run(req);
+  await check('email').isEmail().withMessage('Email is not correct').run(req);
 
   await check('password').isLength({min: 6}).withMessage('Password length must be at least 6 characters').run(req);
   await check('repeatedPassword').equals(req.body.password).withMessage('Passwords are not equals!').run(req);
@@ -127,7 +197,7 @@ const forgotPasswordForm = (req, res) => {
 const resetPassword = async (req, res) => {
 
   //Validation
-  await check('email').isEmail().withMessage('This looks not like an email!').run(req);
+  await check('email').isEmail().withMessage('Email is not correct').run(req);
 
   let result = validationResult(req);
 
@@ -231,6 +301,7 @@ const newPassword = async (req, res) => {
 
 export {
   loginForm,
+  authenticate,
   registerForm,
   register,
   confirm,
