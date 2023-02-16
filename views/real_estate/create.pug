@@ -1,0 +1,53 @@
+extends ../layout/index
+
+block content
+  div.py-5
+    h1.text-4xl.my-5.font-extrabold.text-center Real
+      span.font-normal Estate
+    h2.text-center.text-2xl.font-extrabold=page
+
+    div(class="bg-white shadow py-8 px-4 rounded mx-auto max-w-4xl my-10 md:px-10")
+        form.space-y-8
+            div.space-y-3 
+                h3.text-lg.leading-6.font-medium.text-gray-900 General Info
+                p.text-gray-600 Add Info About This Real Estate
+
+                div 
+                    label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="title") Post Title
+                    input#title.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Real Estate Title, e.g. Beach House" type="text" name="title")
+                
+                div(class="md:flex md:gap-4 space-y-5 md:space-y-0")
+                    div(class="md:w-1/2")
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="category") Category
+                        select#category.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(name="category")
+                            option(value="" ) - Select -
+                    
+                    div(class="md:w-1/2")
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="price") Price
+                        select#price.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(name="price")
+                            option(value="" ) - Select -
+
+                div(class="md:flex md:gap-4 space-y-5 md:space-y-0")
+                    div(class="md:w-1/3")
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="rooms") Rooms
+                        select#rooms.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(name="rooms")
+                            option(value="" ) - Select -
+                            - var n = 1;
+                                while n < 10
+                                    option(value=n) #{n++}
+
+                    div(class="md:w-1/3")
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="parking") Parking
+                        select#parking.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(name="parking")
+                            option(value="" ) - Select -
+                            - var n = 1;
+                                while n < 5
+                                    option(value=n) #{n++}
+
+                    div(class="md:w-1/3")
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="bathrooms") WC
+                        select#bathrooms.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(name="bathrooms")
+                            option(value="" ) - Select -
+                            - var n = 1;
+                                while n < 5
+                                    option(value=n) #{n++}

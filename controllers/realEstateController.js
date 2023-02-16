@@ -3,10 +3,16 @@ const admin = (req, res) => {
         page: 'My Real Estate',
         bar: true
     });
+}
 
-    //res.send('My real estate for you');
+const create = (req, res) => {
+    res.render('real_estate/create', {
+        page: 'Post Real Estate',
+        bar: true
+    });
 }
 
 export {
-    admin
+    admin,
+    create
 }
