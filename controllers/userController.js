@@ -77,7 +77,7 @@ const authenticate = async (req, res) => {
   return res.cookie('_token', token, {
     httpOnly: true,//avoid cross site attacks
     secure:true //cookies in secure connections
-  }).redirect('/my_real_estate');
+  }).redirect('/my_properties');
 }
 
 const registerForm = (req, res) => {

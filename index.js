@@ -2,7 +2,7 @@ import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
-import realEstateRoutes from './routes/realEstateRoutes.js';
+import propertyRoutes from './routes/propertyRoutes.js';
 import db from './config/db.js';
 
 //Creating the app
@@ -35,7 +35,7 @@ app.use(express.static('public'));
 
 //Routing
 app.use('/auth', userRoutes);
-app.use('/', realEstateRoutes);
+app.use('/', propertyRoutes);
 
 //Define a port and start the project
 const port = process.env.PORT || 3000;
